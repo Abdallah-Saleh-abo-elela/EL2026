@@ -17,6 +17,28 @@ def parse_config_file(file_path):
     pattern = r'^([A-Z_][A-Z0-9_:${}]*)\s*=\s*"([^"]*(?:\\[\s\S]*?)*)"'
 
     """
+    config_data = {}
+    with open(file_path, "r", encoding="utf-8") as file:
+        for line in file:
+            line = line.strip()
+            if not line or "=" not in line:
+                continue
+            parts = line.split("=", 1)
+            key = parts[0].strip()
+            value = parts[1].strip()
+
+            allowed_chars = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_:${}")
+            is_valid_key = (
+                len(key) > 0
+                and all(char in allowed_chars for char in key)
+                and (key[0].isupper() or key[0] == "_")
+            )
+            is_valid_value = value.startswith('"') and value.endswith('"')
+
+            if is_valid_key and is_valid_value:
+                config_data[key] = value[1:-1]
+    return config_data
+
 
 
 if __name__ == "__main__":
